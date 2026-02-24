@@ -9,6 +9,7 @@
   "boot": "auto",
   "host_network": true,
   "privileged": ["NET_ADMIN", "NET_RAW", "SYS_PTRACE"],
+  "full_access": true,
   "hassio_api": false,
   "homeassistant_api": false,
   "map": ["config:rw"],

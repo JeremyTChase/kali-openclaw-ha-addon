@@ -36,7 +36,7 @@ ENV PATH="${PNPM_HOME}:${PATH}"
 RUN npm install -g pnpm && \
     mkdir -p /pnpm && \
     pnpm config set global-bin-dir /pnpm && \
-    pnpm add -g clawdhub
+    pnpm add -g clawdhub undici
 
 # ---- Layer 5: gog CLI (Google Workspace) ----
 ARG GOG_VERSION=0.6.1

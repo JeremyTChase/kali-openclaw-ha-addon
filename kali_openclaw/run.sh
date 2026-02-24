@@ -120,7 +120,7 @@ if [ "$VERBOSE" = "true" ]; then
 fi
 
 echo "[kali-openclaw] Starting OpenClaw gateway on port ${PORT}..."
-exec npx clawdhub gateway \
+exec clawdhub gateway \
   --port "$PORT" \
   --state-dir "$STATE_DIR" \
   --workspace "$WORKSPACE" \

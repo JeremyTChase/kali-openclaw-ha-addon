@@ -138,7 +138,7 @@ fi
 
 export OPENCLAW_CONFIG_PATH="${CONFIG_FILE}"
 
-ARGS=(gateway --allow-unconfigured --port "$PORT")
+ARGS=(gateway --allow-unconfigured --port "$PORT" --bind lan)
 if [ "$VERBOSE" = "true" ]; then
   ARGS+=(--verbose)
 fi

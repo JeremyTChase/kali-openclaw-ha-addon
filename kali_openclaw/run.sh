@@ -100,11 +100,23 @@ if [ ! -f "$CONFIG_FILE" ]; then
   echo "[kali-openclaw] No config found — creating placeholder..."
   cat > "$CONFIG_FILE" << 'DEFAULTCFG'
 {
-  "gateway": {"port": 18790},
+  "gateway": {
+    "port": 18790,
+    "controlUi": {
+      "dangerouslyAllowHostHeaderOriginFallback": true
+    }
+  },
   "skills": {"load": {"extraDirs": ["/config/kali-openclaw/workspace/skills"]}},
   "tools": {"exec": {"security": "full"}}
 }
 DEFAULTCFG
+fi
+
+# Ensure controlUi setting exists (may be missing from older configs)
+if ! jq -e '.gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback' "$CONFIG_FILE" >/dev/null 2>&1; then
+  echo "[kali-openclaw] Patching config: adding controlUi fallback..."
+  jq '.gateway.controlUi = {"dangerouslyAllowHostHeaderOriginFallback": true}' "$CONFIG_FILE" > "${CONFIG_FILE}.tmp" \
+    && mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
 fi
 
 # ---- .env file ----

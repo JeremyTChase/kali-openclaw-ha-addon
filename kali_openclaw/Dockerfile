@@ -41,8 +41,8 @@ RUN npm install -g pnpm && \
 # ---- Layer 5: gog CLI (Google Workspace) ----
 ARG GOG_VERSION=0.6.1
 ARG TARGETARCH
-RUN ARCH=$(echo ${TARGETARCH:-$(dpkg --print-architecture)} | sed 's/aarch64/arm64/;s/x86_64/amd64/') && \
-    curl -fsSL "https://github.com/steigetc/gogcli/releases/download/v${GOG_VERSION}/gogcli_${GOG_VERSION}_linux_${ARCH}.tar.gz" \
+RUN ARCH=$(echo ${TARGETARCH:-$(uname -m)} | sed 's/aarch64/arm64/;s/x86_64/amd64/') && \
+    curl -fsSL "https://github.com/steipete/gogcli/releases/download/v${GOG_VERSION}/gogcli_${GOG_VERSION}_linux_${ARCH}.tar.gz" \
       | tar xz -C /usr/local/bin gog && \
     chmod +x /usr/local/bin/gog
 

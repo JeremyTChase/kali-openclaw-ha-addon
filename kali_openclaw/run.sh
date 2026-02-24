@@ -52,6 +52,13 @@ sed -i 's/^#\?UsePAM .*/UsePAM no/' /etc/ssh/sshd_config
 /usr/sbin/sshd
 echo "[kali-openclaw] SSH listening on port ${SSH_PORT} (key-only auth)"
 
+# ---- Strip file capabilities (HA containers lack CAP_NET_RAW in bounding set) ----
+# Without this, binaries with file caps (nmap, tcpdump) refuse to execute.
+echo "[kali-openclaw] Stripping file capabilities from Kali binaries..."
+for bin in /usr/lib/nmap/nmap /usr/bin/tcpdump /usr/sbin/tcpdump; do
+  [ -f "$bin" ] && setcap -r "$bin" 2>/dev/null && echo "  stripped: $bin" || true
+done
+
 # ---- Clone / update OpenClaw ----
 OPENCLAW_DIR="/opt/openclaw"
 if [ -n "$GITHUB_TOKEN" ]; then

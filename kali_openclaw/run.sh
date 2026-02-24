@@ -73,9 +73,26 @@ fi
 # ---- Install / build ----
 cd "$OPENCLAW_DIR"
 pnpm install --frozen-lockfile 2>/dev/null || pnpm install
-if [ -d "packages/ui" ]; then
-  pnpm --filter ui build 2>/dev/null || true
+echo "[kali-openclaw] Building gateway..."
+pnpm build
+
+# Build UI if present
+if [ -d "ui" ] && [ ! -d "ui/node_modules" ]; then
+  pnpm ui:install 2>/dev/null || true
 fi
+if [ -d "ui" ]; then
+  pnpm ui:build 2>/dev/null || true
+fi
+
+# ---- Create openclaw wrapper ----
+BINDIR="${PERSIST}/bin"
+mkdir -p "$BINDIR"
+cat > "${BINDIR}/openclaw" <<'EOF_WRAPPER'
+#!/usr/bin/env bash
+exec node "/opt/openclaw/openclaw.mjs" "$@"
+EOF_WRAPPER
+chmod +x "${BINDIR}/openclaw"
+export PATH="${BINDIR}:${PATH}"
 
 # ---- Initialize config if first run ----
 CONFIG_FILE="${STATE_DIR}/openclaw.json"
@@ -119,9 +136,12 @@ if [ "$VERBOSE" = "true" ]; then
   VERBOSE_FLAG="--verbose"
 fi
 
+export OPENCLAW_CONFIG_PATH="${CONFIG_FILE}"
+
+ARGS=(gateway --allow-unconfigured --port "$PORT")
+if [ "$VERBOSE" = "true" ]; then
+  ARGS+=(--verbose)
+fi
+
 echo "[kali-openclaw] Starting OpenClaw gateway on port ${PORT}..."
-exec clawdhub gateway \
-  --port "$PORT" \
-  --state-dir "$STATE_DIR" \
-  --workspace "$WORKSPACE" \
-  $VERBOSE_FLAG
+exec openclaw "${ARGS[@]}"

@@ -1,0 +1,36 @@
+{
+  "name": "Kali OpenClaw Gateway",
+  "version": "0.1.0",
+  "slug": "kali_openclaw",
+  "description": "Kali Linux headless with OpenClaw ethical hacking assistant",
+  "url": "https://github.com/JeremyTChase/kali-openclaw-ha-addon",
+  "arch": ["aarch64"],
+  "startup": "services",
+  "boot": "auto",
+  "host_network": true,
+  "hassio_api": false,
+  "homeassistant_api": false,
+  "map": ["config:rw"],
+  "environment": {
+    "HOME": "/config/kali-openclaw",
+    "GH_CONFIG_DIR": "/config/kali-openclaw/.config/gh"
+  },
+  "options": {
+    "port": 18790,
+    "verbose": false,
+    "repo_url": "https://github.com/openclaw/openclaw.git",
+    "branch": "",
+    "github_token": "",
+    "ssh_port": 2223,
+    "ssh_authorized_keys": ""
+  },
+  "schema": {
+    "port": "int(1,65535)",
+    "verbose": "bool",
+    "repo_url": "str",
+    "branch": "str?",
+    "github_token": "password?",
+    "ssh_port": "int(1,65535)",
+    "ssh_authorized_keys": "str?"
+  }
+}

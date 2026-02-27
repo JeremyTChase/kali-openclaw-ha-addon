@@ -24,6 +24,10 @@ mkdir -p "${STATE_DIR}" "${STATE_DIR}/cron" \
 # Symlink npm cache to persistent storage
 ln -sfn "${PERSIST}/.npm" /root/.npm 2>/dev/null || true
 
+# Symlink .openclaw so CLI finds the real config when HOME=/root
+rm -rf /root/.openclaw 2>/dev/null || true
+ln -sfn "${STATE_DIR}" /root/.openclaw
+
 # ---- SSH setup (key-only auth) ----
 mkdir -p /var/run/sshd /root/.ssh
 chmod 700 /root/.ssh
@@ -100,6 +104,11 @@ exec node "/opt/openclaw/openclaw.mjs" "$@"
 EOF_WRAPPER
 chmod +x "${BINDIR}/openclaw"
 export PATH="${BINDIR}:${PATH}"
+
+# Add openclaw to PATH for SSH sessions
+if ! grep -q 'kali-openclaw/bin' /root/.bashrc 2>/dev/null; then
+  echo 'export PATH="/config/kali-openclaw/bin:${PATH}"' >> /root/.bashrc
+fi
 
 # ---- Initialize config if first run ----
 CONFIG_FILE="${STATE_DIR}/openclaw.json"
